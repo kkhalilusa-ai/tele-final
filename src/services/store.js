@@ -440,8 +440,18 @@ async function submitUsdtTxId(telegramId, depositId, txId) {
     p_deposit_id: depositId,
     p_transaction_id: txId
   }), 'submit USDT TxID')[0];
+
+  // The SQL RPC intentionally returns a compact result and does not include
+  // payment_method/network/quote fields. The admin Telegram notification
+  // needs those fields to distinguish Solana from BEP20. Re-read the saved
+  // deposit row so both notification paths receive the canonical method.
+  const full = unwrap(await db().from('deposits')
+    .select('id,payment_method,network,payment_address,crypto_amount,price_used,price_source,price_at,currency')
+    .eq('id', depositId)
+    .single(), 'reload submitted deposit');
+
   liveEvents.publish(['dashboard', 'deposits'], { source: 'deposit_submit' });
-  return row;
+  return { ...row, ...full };
 }
 
 async function approveDeposit(depositId, adminTelegramId) {
