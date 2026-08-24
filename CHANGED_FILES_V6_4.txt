@@ -1,0 +1,26 @@
+v6.4 Referral Controls
+
+Modified:
+- bot.js
+  - Prevents a disabled personal referral from displaying/generating a ref link.
+- admin.js
+  - Added per-user referral enable/disable/delete API endpoints.
+  - Added merchant referral delete API endpoint.
+  - Added quick Enable/Disable/Delete controls for normal referrers.
+  - Added quick Enable/Disable/Delete controls for merchant referral links.
+  - Added confirmation dialogs and audit logging.
+- src/services/store.js
+  - Added per-user referral_active status handling.
+  - Added disable/enable and delete operations for personal referral codes.
+  - Added merchant referral link deletion.
+  - Preserves referral/commission history when a personal referral code is deleted.
+- database.sql
+  - Includes v6.4 schema/function changes for fresh deployments.
+- migration_v6_4_referral_controls.sql
+  - Adds users.referral_active and updates attribution/commission guards.
+
+Behavior:
+- Disable personal referral: keeps the code/history but blocks new attribution and future commissions.
+- Delete personal referral: removes the code and disables the referral; historical data remains.
+- Disable merchant referral: keeps the link but blocks new attribution and future commissions.
+- Delete merchant referral: removes the link; historical commission rows remain, while future commissions stop.

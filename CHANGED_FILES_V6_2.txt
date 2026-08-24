@@ -1,0 +1,58 @@
+Telegram Store Bot v6.2 — Changed Files
+========================================
+
+1. migration_v6_2_multi_delivery_chat_cleanup.sql
+   Replaces purchase_product_v2 safely, locks/selects exactly p_quantity unique
+   inventory rows, validates update/array counts, preserves idempotency, and
+   adds persistent chat-cleanup state and feature switches.
+
+2. database.sql
+   Brings clean installations to the same v6.2 purchase and UI-state behavior.
+
+3. src/services/store.js
+   Hydrates all encrypted deliveries, rejects count mismatches before success,
+   validates My Orders deliveries, and persists cleanup message IDs.
+
+4. src/services/delivery.js
+   Central delivery-count validation, ordered Item X of Y formatting, and safe
+   Telegram message chunking without splitting individual credentials/links.
+
+5. src/services/customEmojis.js
+   Validates IDs with getCustomEmojiStickers, caches results, reports animated
+   status, creates HTML tags/button icons, and provides Unicode fallback.
+
+6. src/services/chatCleanup.js
+   Batched deleteMessages with deleteMessage fallback and non-fatal failures.
+
+7. bot.js
+   Uses permanent delivery/payment messages, safe transient navigation cleanup,
+   last-user-message rotation, multi-message delivery, and validated emojis.
+
+8. src/keyboards.js
+   Adds validated icon_custom_emoji_id support to Inline and Reply buttons and
+   removes duplicate Unicode icons when a Custom Emoji icon is active.
+
+9. admin.js
+   Adds Custom Emoji enable/disable, chat cleanup setting, validation endpoint,
+   and the Test Custom Emojis button.
+
+10. src/locales/en.js, src/locales/ar.js, src/locales/hi.js
+    Adds localized multi-item headings, order summary, and integrity error text.
+
+11. test/v62MultiDelivery.test.js
+    Adds the 15 required v6.2 scenarios plus the SQL migration contract test.
+
+12. package.json, package-lock.json
+    Sets version 6.2.0 and includes the new modules in npm run check.
+
+13. README.md
+    Adds migration/Render steps and official Telegram Custom Emoji requirements.
+
+14. NEW_ENV_VARIABLES_V6_2.txt
+    Confirms that v6.2 adds no environment variables.
+
+15. TEST_REPORT_V6_2.txt
+    Records the final verification results.
+
+16. CHANGELOG.md, CHANGES.md
+    Documents the v6.2 production upgrade and final test count.

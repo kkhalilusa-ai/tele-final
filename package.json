@@ -1,0 +1,33 @@
+{
+  "name": "telegram-store-bot",
+  "version": "6.2.0",
+  "description": "Production Telegram store bot with dynamic catalog layouts, uncategorized products, live admin, notification automation, inventory, wallet, Binance Pay and USDT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node --test test/*.test.js",
+    "check": "node --check index.js && node --check bot.js && node --check admin.js && node --check src/config.js && node --check src/database.js && node --check src/i18n.js && node --check src/keyboards.js && node --check src/utils.js && node --check src/security/inventoryCrypto.js && node --check src/services/store.js && node --check src/services/delivery.js && node --check src/services/customEmojis.js && node --check src/services/chatCleanup.js && node --check src/services/liveEvents.js && node --check src/services/binancePay.js && node --check src/services/notifications.js && node --check src/services/scheduledSales.js && node --check src/admin/security.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "store",
+    "binance-pay",
+    "usdt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "telegraf": "^4.16.3",
+    "@supabase/supabase-js": "^2.39.0",
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

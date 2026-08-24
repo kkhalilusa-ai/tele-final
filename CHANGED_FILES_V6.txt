@@ -1,0 +1,35 @@
+Modified files
+==============
+.env.example
+CHANGES.md
+README.md
+VERIFICATION.md
+admin.js
+bot.js
+database.sql
+env.example
+index.js
+package-lock.json
+package.json
+src/config.js
+src/keyboards.js
+src/locales/ar.js
+src/locales/en.js
+src/locales/hi.js
+src/services/binancePay.js
+src/services/liveEvents.js
+src/services/store.js
+src/utils.js
+test/binancePay.test.js
+test/i18n.test.js
+test/upgradeContracts.test.js
+
+New files
+=========
+migration_v6_ui_bep20_binance_history.sql
+src/services/scheduledSales.js
+test/v6Upgrade.test.js
+UPGRADE_V6.md
+NEW_ENV_VARIABLES_V6.txt
+TEST_REPORT_V6.txt
+CHANGED_FILES_V6.txt

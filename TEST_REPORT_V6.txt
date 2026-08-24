@@ -1,0 +1,25 @@
+Telegram Store Bot v6 verification
+
+npm ci: PASS (123 packages installed)
+npm run check: PASS
+Embedded Admin Panel client JavaScript syntax: PASS
+npm test: PASS
+
+Tests: 44
+Passed: 44
+Failed: 0
+Skipped: 0
+
+Covered v6 contracts include:
+- Binance Order ID normalization
+- Transaction ID fallback rejected
+- Receiver mismatch rejected
+- Exact currency and payment-time validation
+- Duplicate Order ID database protection
+- BEP20 TxID validation
+- Quantity choices bounded by stock
+- Large-stock presets and Custom Quantity
+- BEP20/legacy migration compatibility
+- Admin Binance history and API test routes
+- Scheduled Flash Sale routes and worker
+- Existing atomic inventory, wallet, refund, notification and admin security regressions

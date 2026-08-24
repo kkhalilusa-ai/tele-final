@@ -1,0 +1,8 @@
+Telegram Store Bot v6.2 — New Environment Variables
+=====================================================
+
+No new environment variables are required for v6.2.
+
+Keep all existing Render environment variables from v6 unchanged.
+Custom Emoji IDs, the Custom Emoji enable/disable switch, and automatic chat
+cleanup are configured from Admin Panel and stored in bot_settings.

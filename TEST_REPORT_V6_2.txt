@@ -1,0 +1,50 @@
+Telegram Store Bot v6.2 — Test Report
+======================================
+
+Date: 2026-08-12
+Runtime: Node.js 24.14.0 (project requires Node.js 22+)
+
+Commands
+--------
+npm run check
+npm test
+
+Final result
+------------
+npm run check: PASS
+npm test: PASS
+Tests: 60
+Passed: 60
+Failed: 0
+Skipped: 0
+
+Required v6.2 scenarios
+-----------------------
+PASS  1. Instant purchase quantity 1
+PASS  2. Instant purchase quantity 2
+PASS  3. Instant purchase quantity 5 returns five decrypted deliveries
+PASS  4. Instant purchase quantity 10
+PASS  5. Stock 4 / request 5 rolls back without debit or order
+PASS  6. Double confirmation creates one order and one debit
+PASS  7. Concurrent purchases never share an inventory item
+PASS  8. Same idempotency key returns the original complete delivery set
+PASS  9. My Orders validates and displays all five items
+PASS 10. Long delivery splits at item boundaries without data loss
+PASS 11. Valid Custom Emoji ID is verified and cached
+PASS 12. Invalid Custom Emoji ID falls back to Unicode
+PASS 13. Transient cleanup does not include permanent delivery messages
+PASS 14. Telegram deletion failure does not stop the flow
+PASS 15. Wallet and Binance Pay use the same quantity/idempotency purchase path
+
+Additional verification
+-----------------------
+PASS v6.2 migration contract: FOR UPDATE SKIP LOCKED, LIMIT p_quantity,
+     exact selected/updated/array counts, ORDER BY id, and no DROP TABLE/TRUNCATE.
+PASS Existing admin, security, Binance, encryption, i18n, v5 and v6 tests.
+
+Note
+----
+The five-item behavior was executed through the delivery hydration and atomic
+purchase model test using five distinct payload records. A final live purchase
+should still be performed after applying the migration to the owner's Supabase
+project because production credentials are intentionally not included here.
