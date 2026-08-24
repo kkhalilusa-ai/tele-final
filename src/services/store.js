@@ -175,10 +175,18 @@ async function purchase(telegramId, productId, quantity = 1, idempotencyKey) {
   });
   const row = unwrap(upgraded, 'purchase product v2')[0];
   const deliveries = hydratePurchaseDeliveries(productId, row, decryptPayload);
+
+  // The purchase RPC intentionally returns a compact payment payload.
+  // My Orders, however, renders delivery from the persisted order snapshots
+  // (including delivery_snapshot / warranty snapshots / delivery details).
+  // Re-read the just-created order here so instant post-payment delivery gets
+  // exactly the same source data as My Orders instead of a reduced RPC row.
+  const persistedOrder = await getOrderDetails(telegramId, row.order_id);
+
   liveEvents.publish(['dashboard', 'products', 'inventory', 'orders', 'wallet'], { source: 'purchase' });
   getProduct(productId).then((afterProduct) => notifications.captureProductChange(product, afterProduct))
     .catch((error) => console.warn('purchase_notification_capture_failed', { productId, message: error.message }));
-  return { ...row, deliveries };
+  return { ...(persistedOrder || {}), ...row, deliveries };
 }
 
 async function listOrders(telegramId, page = 0, admin = false) {
