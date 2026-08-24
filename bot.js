@@ -514,15 +514,12 @@ async function sendPurchaseSuccess(ctx, order, language, paymentLabel = 'Wallet'
 
   const ui = await runtimeUi();
   if (order.fulfillment_type === 'instant') {
+    // Instant purchases must use the exact same delivery renderer/flow as My Orders.
+    // This keeps the post-payment delivery card identical to the order-details view.
     assertDeliveryCount(order, order.deliveries);
-    const successIcon = customEmoji('✅', 'success_custom_emoji_id', ui);
-    const base = t(language, 'instantOrderSummary', {
-      orderId: order.order_id, product: escapeHtml(order.product_name), quantity: order.quantity,
-      total: formatAmount(order.total_amount), payment: escapeHtml(paymentLabel), date: dateFor(language, new Date()), successIcon
-    });
-    const suffix = ui.settings.order_success_message ? `\n\n${escapeHtml(ui.settings.order_success_message)}` : '';
-    await sendPermanent(ctx, base + suffix, { parse_mode: 'HTML', disable_web_page_preview: true });
-    await sendDeliveryPayloads(ctx, order, language, ui);
+    const back = keyboards.orderDetails(language, 'all', 0, ui);
+    await sendDeliveryPayloads(ctx, order, language, ui, back);
+    return;
   } else {
     const base = t(language, 'manualOrderSuccess', {
       orderId: order.order_id, product: escapeHtml(order.product_name), quantity: order.quantity,
