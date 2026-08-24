@@ -1230,20 +1230,31 @@ bot.action(/^ad:(a|r):([0-9a-f-]{36})$/, async (ctx) => {
   const language = languageOf(ctx);
   if (!isAdmin(ctx.from.id)) return answerCallback(ctx, t(language, 'adminOnly'), true);
   const approve = ctx.match[1] === 'a';
-  const result = approve
-    ? await store.approveDeposit(ctx.match[2], ctx.from.id)
-    : await store.rejectDeposit(ctx.match[2], ctx.from.id, 'Rejected by administrator');
-  if (!result.credited && !result.changed) {
-    await answerCallback(ctx, result.status === 'expired' ? t(language, 'depositExpired') : t(language, 'alreadyProcessed'), true);
-    return;
+  try {
+    const result = approve
+      ? await store.approveDeposit(ctx.match[2], ctx.from.id)
+      : await store.rejectDeposit(ctx.match[2], ctx.from.id, 'Rejected by administrator');
+    if (!result.credited && !result.changed) {
+      await answerCallback(ctx, result.status === 'expired' ? t(language, 'depositExpired') : t(language, 'alreadyProcessed'), true);
+      return;
+    }
+    await answerCallback(ctx, t(language, approve ? 'adminDepositApproved' : 'adminDepositRejected'));
+    await ctx.editMessageReplyMarkup({ inline_keyboard: [] }).catch(() => {});
+    const user = await store.getUser(result.telegram_id);
+    const userLanguage = normalizeLanguage(user?.language || 'en');
+    await ctx.telegram.sendMessage(result.telegram_id, t(userLanguage, approve ? 'depositApproved' : 'depositRejected', {
+      amount: formatAmount(result.amount)
+    }));
+  } catch (error) {
+    console.error('admin_deposit_action_failed', {
+      action: approve ? 'approve' : 'reject',
+      depositId: ctx.match[2],
+      adminTelegramId: ctx.from.id,
+      code: error?.code,
+      message: String(error?.message || error).slice(0, 500)
+    });
+    await answerCallback(ctx, `❌ ${String(error?.message || 'Operation failed').slice(0, 180)}`, true).catch(() => {});
   }
-  await answerCallback(ctx, t(language, approve ? 'adminDepositApproved' : 'adminDepositRejected'));
-  await ctx.editMessageReplyMarkup({ inline_keyboard: [] }).catch(() => {});
-  const user = await store.getUser(result.telegram_id);
-  const userLanguage = normalizeLanguage(user.language);
-  await ctx.telegram.sendMessage(result.telegram_id, t(userLanguage, approve ? 'depositApproved' : 'depositRejected', {
-    amount: formatAmount(result.amount)
-  }));
 });
 
 function commandBody(ctx) {
