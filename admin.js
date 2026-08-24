@@ -1921,7 +1921,7 @@ const ADMIN_CLIENT_JS = String.raw`
 
   async function categoryOptions() { var result=await api('/categories?limit=100&page=1');return result.data; }
   function productForm(product,categories) {
-    var tiers=(product&&product.bulk_pricing_tiers||[]).map(function(t){return t.min_quantity+'|'+(t.max_quantity==null?'':t.max_quantity)+'|'+t.unit_price;}).join('\\n');
+    var tiers=(product&&product.bulk_pricing_tiers||[]).map(function(t){return t.min_quantity+'|'+(t.max_quantity==null?'':t.max_quantity)+'|'+t.unit_price;}).join('\n');
     var categoryChoices=[['','📦 No Category / Other Products']].concat(categories.map(function(c){return [c.id,(c.emoji||'')+' '+c.name+(c.active?'':' (inactive)')];}));
     var form=node('form',{class:'form-grid'});
     var deliveryDetailsInput=node('input',{type:'hidden',name:'deliveryDetails',value:product&&product.delivery_text||''});
@@ -1997,7 +1997,7 @@ const ADMIN_CLIENT_JS = String.raw`
     form.appendChild(preview);
     append(form,[node('div',{class:'section-note wide',text:'Basic Information · Pricing · Availability · Delivery · Customer Content · Media · Advanced. Preview uses demo credentials only.'})]);
     var save=button(product?'Save changes':'Create product','',function(){submitForm(form,save,async function(fd){
-      var tierRows=String(fd.get('tiers')||'').split(/\\r?\\n/).map(function(line){return line.trim();}).filter(Boolean).map(function(line){var parts=line.split('|').map(function(v){return v.trim();});if(parts.length!==3)throw new Error('Each bulk tier must use min|max|unit price.');return{min_quantity:parts[0],max_quantity:parts[1]||null,unit_price:parts[2]};});
+      var tierRows=String(fd.get('tiers')||'').split(/\r?\n|\\n/).map(function(line){return line.trim();}).filter(Boolean).map(function(line){var parts=line.split('|').map(function(v){return v.trim();});if(parts.length!==3)throw new Error('Each bulk tier must use min|max|unit price.');return{min_quantity:parts[0],max_quantity:parts[1]||null,unit_price:parts[2]};});
       var category=String(fd.get('category')||'');
       var body={category_id:category||null,name:String(fd.get('name')),emoji:String(fd.get('emoji')),subtitle:String(fd.get('subtitle')),duration:String(fd.get('duration')),product_type:String(fd.get('productType')),price:String(fd.get('price')),currency:String(fd.get('currency')).toUpperCase(),product_status:String(fd.get('productStatus')),fulfillment_type:String(fd.get('fulfillment')),delivery_time_label:String(fd.get('eta')),warranty_value:String(fd.get('warrantyValue'))||null,warranty_unit:String(fd.get('warrantyUnit'))||null,manual_stock:String(fd.get('manualStock')),unlimited_stock:String(fd.get('unlimited'))==='true',allow_preorder:String(fd.get('preorder'))==='true',bulk_pricing_enabled:String(fd.get('bulk'))==='true',bulk_pricing_tiers:tierRows,notification_mode:String(fd.get('notificationMode')),sort_order:String(fd.get('sortOrder')||0),sold_display_offset:String(fd.get('soldOffset')||0),short_description:String(fd.get('short')),full_description:String(fd.get('full')),public_instructions:String(fd.get('instructions')),delivery_text:String(fd.get('deliveryDetails')||''),image_url:String(fd.get('image'))||null,telegram_file_id:String(fd.get('telegramFile'))||null};
       await api('/products'+(product?'/'+product.id:''),{method:product?'PATCH':'POST',body:body});toast(product?'Product updated.':'Product created.','success');
